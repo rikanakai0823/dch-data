@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const { Agent } = require("https");
 const {
   uaString,
   upstreamApiDomain,
@@ -6,10 +7,16 @@ const {
   upstreamOriginDomain,
 } = require("./config");
 
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 5,
+});
+
 const fetchMeta = (path, payload) => {
     const url = `https://${upstreamApiDomain}${upstreamApiPath}${path}`;
     return fetch(url, {
       method: 'post',
+      agent,
       headers: {
         'user-agent': uaString,
         'origin': `https://${upstreamOriginDomain}`,
